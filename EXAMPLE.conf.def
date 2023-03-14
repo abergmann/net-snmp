@@ -189,5 +189,5 @@ linkUpDownNotifications  yes
                                            #  Run as an AgentX master agent
  master          agentx
                                            #  Listen for network connections (from localhost)
-                                           #    rather than the default named socket /var/agentx/master
+                                           #    rather than the default named socket /run/agentx/master
 #agentXSocket    tcp:localhost:705

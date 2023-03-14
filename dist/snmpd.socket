@@ -11,7 +11,7 @@ ListenDatagram=0.0.0.0:161
 # ListenStream=[::]:161
 #
 # Uncomment AgentX socket if snmpd.conf enables AgentX protocol.
-# ListenStream=/var/agentx/master
+# ListenStream=/run/agentx/master
 
 [Install]
 WantedBy=sockets.target

@@ -1939,7 +1939,7 @@ Configuring the agent:
                                     (Default: LOGIN@DOMAINNAME)
   --with-sys-location="location"  Default system location.
                                     (Default: Unknown)
-  --with-agentx-socket=FILE         AgentX socket (Default: /var/agentx/master as specified in RFC2741)
+  --with-agentx-socket=FILE         AgentX socket (Default: /run/agentx/master)
   --with-features="feat1 feat2"   Request extra features to be turned on.
                                    (only useful with --enable-minimalist)
   --with-out-features="feat1..."  Remove specific features.
@@ -14220,7 +14220,7 @@ $as_echo "#define NETSNMP_SNMPTRAPD_DISABLE_AGENTX 1" >>confdefs.h
 
 fi
 
-default_agentx_socket="/var/agentx/master"
+default_agentx_socket="/run/agentx/master"
 
 # Check whether --with-agentx-socket was given.
 if test "${with_agentx_socket+set}" = set; then :

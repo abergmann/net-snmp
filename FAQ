@@ -629,7 +629,7 @@ What ports does SNMP use?
     - UDP port 161       - SNMP requests (GET* and SET)
     - UDP port 162       - SNMP notifications  (Traps/Informs)
     - TCP port 705       - AgentX
-    - /var/agentx/master - AgentX
+    - /run/agentx/master - AgentX
 
   However, these are simply the default "well-known" ports for these purposes,
   and it is perfectly possible to accept requests on other ports.
@@ -2282,7 +2282,7 @@ Can I use AgentX when running under Windows?
   Yes, but there are a couple of things to be aware of.
 
   Firstly, by default the AgentX master listens on the Unix domain
-  socket '/var/agentx/master', which doesn't work under Windows.
+  socket '/run/agentx/master', which doesn't work under Windows.
   You'll need to tell it to listen on a TCP port, either by using
   the command-line option "-x localhost:705",  or by adding the
   directive "agentxSocket localhost:705" to the snmpd.conf file.

@@ -1972,7 +1972,7 @@ Can I use AgentX when running under Windows?
   Yes, but there are a couple of things to be aware of.
 
   Firstly, by default the AgentX master listens on the Unix domain
-  socket '/var/agentx/master', which doesn't work under Windows.
+  socket '/run/agentx/master', which doesn't work under Windows.
   You'll need to tell it to listen on a TCP port, either by using
   the command-line option "-x localhost:705",  or by adding the
   directive "agentxAddress localhost:705" to the snmpd.conf file.

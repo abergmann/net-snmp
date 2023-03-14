@@ -793,9 +793,9 @@ if test "x$enable_snmptrapd_subagent" = "xno"; then
     [define if you do not want snmptrapd to register as an AgentX subagent])
 fi
 
-default_agentx_socket="/var/agentx/master"
+default_agentx_socket="/run/agentx/master"
 NETSNMP_ARG_WITH(agentx-socket,
-[  --with-agentx-socket=FILE         AgentX socket (Default: /var/agentx/master as specified in RFC2741)],[
+[  --with-agentx-socket=FILE         AgentX socket (Default: /run/agentx/master as specified in RFC2741)],[
   if test "$withval" = yes; then
     AC_MSG_ERROR([ Please provide a full path ]);
   fi
