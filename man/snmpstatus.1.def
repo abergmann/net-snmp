@@ -32,7 +32,7 @@
 snmpstatus - retrieves a fixed set of management information from a network entity
 .SH SYNOPSIS
 .B snmpstatus
-[COMMON OPTIONS] [\-Cf] AGENT
+[COMMON OPTIONS] [\-Cf] [\-Sni] AGENT
 .SH DESCRIPTION
 .B snmpstatus
 is an SNMP application that retrieves several important statistics
@@ -94,6 +94,11 @@ variable (unless the
 option is given, see below), but this variable will then be missing
 from the displayed data.
 .PP
+It is also possible to suppress parts of the default output by
+using the option
+.B \-S
+(see below).
+.PP
 .SH OPTIONS
 .TP
 .B COMMON OPTIONS
@@ -108,5 +113,13 @@ by the agent and retry a request. In this situation,
 the command will display the data that it can. If the \-Cf option
 is specified, then snmpstatus will not try to fix
 errors, and the error will cause the command to terminate.
+.TP
+.B \-Sn
+Do not retrieve and print network statistics such as packets
+sent and received and the number of network interfaces that
+are down.
+.TP
+.B \-Si
+Do not print the number of network interfaces that are down.
 .SH "SEE ALSO"
 snmpcmd(1), snmpget(1)

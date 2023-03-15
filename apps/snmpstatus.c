@@ -96,6 +96,15 @@ size_t          length_ipOutRequests =
 
 #define NETSNMP_DS_APP_DONT_FIX_PDUS 0
 
+/* Flags to control which additional information to request and print */
+#define NETSNMP_STATUS_REQ_NETSTAT    0x0001
+#define NETSNMP_STATUS_REQ_NETOPER    0x0002
+#define NETSNMP_STATUS_REQ_ALL        0xffff
+
+/* By default request and print everything and let the user decide what
+   to suppress */
+static unsigned int rq_status = NETSNMP_STATUS_REQ_ALL;
+
 static void
 optProc(int argc, char *const *argv, int opt)
 {
@@ -109,6 +118,22 @@ optProc(int argc, char *const *argv, int opt)
                 break;
             default:
                 fprintf(stderr, "Unknown flag passed to -C: %c\n",
+                        optarg[-1]);
+                exit(1);
+            }
+        }
+        break;
+    case 'S':     /* 'S' == 'Suppress' */
+        while (*optarg) {
+            switch (*optarg++) {
+            case 'n':
+                rq_status &= ~NETSNMP_STATUS_REQ_NETSTAT;
+                break;
+            case 'i':
+                rq_status &= ~NETSNMP_STATUS_REQ_NETOPER;
+                break;
+            default:
+                fprintf(stderr, "Unknown flag passed to -S: %c\n",
                         optarg[-1]);
                 exit(1);
             }
@@ -128,6 +153,12 @@ usage(void)
             "  -C APPOPTS\t\tSet various application specific behaviours:\n");
     fprintf(stderr,
             "\t\t\t  f:  do not fix errors and retry the request\n");
+    fprintf(stderr,
+            "  -S REQOPTS\t\tDo not request and print information about:\n");
+    fprintf(stderr,
+            "\t\t\t  n:  network (packets sent/received, operational status)\n");
+    fprintf(stderr,
+            "\t\t\t  i:  interface operational status\n");
 }
 
 
@@ -154,7 +185,7 @@ main(int argc, char *argv[])
     /*
      * get the common command line arguments 
      */
-    switch (snmp_parse_args(argc, argv, &session, "C:", &optProc)) {
+    switch (snmp_parse_args(argc, argv, &session, "C:S:", &optProc)) {
     case NETSNMP_PARSE_ARGS_ERROR:
         goto out;
     case NETSNMP_PARSE_ARGS_SUCCESS_EXIT:
@@ -185,8 +216,10 @@ main(int argc, char *argv[])
     pdu = snmp_pdu_create(SNMP_MSG_GET);
     snmp_add_null_var(pdu, objid_sysDescr, length_sysDescr);
     snmp_add_null_var(pdu, objid_sysUpTime, length_sysUpTime);
-    snmp_add_null_var(pdu, objid_ipInReceives, length_ipInReceives);
-    snmp_add_null_var(pdu, objid_ipOutRequests, length_ipOutRequests);
+    if (rq_status & NETSNMP_STATUS_REQ_NETSTAT) {
+        snmp_add_null_var(pdu, objid_ipInReceives, length_ipInReceives);
+        snmp_add_null_var(pdu, objid_ipOutRequests, length_ipOutRequests);
+    }
 
     /*
      * do the request 
@@ -278,6 +311,10 @@ main(int argc, char *argv[])
 
     if (response)
         snmp_free_pdu(response);
+
+    /* Suppress request to retrieve network statistics */
+    if (!(rq_status & NETSNMP_STATUS_REQ_NETSTAT))
+        goto done;
 
     /*
      * create PDU for GET request and add object names to request 
@@ -386,11 +423,12 @@ main(int argc, char *argv[])
     }
     printf("Interfaces: %d, Recv/Trans packets: %d/%d | IP: %d/%d\n",
            interfaces, ipackets, opackets, ipin, ipout);
-    if (down_interfaces > 0) {
+    if ((rq_status & NETSNMP_STATUS_REQ_NETOPER) && (down_interfaces > 0)) {
         printf("%d interface%s down!\n",
                down_interfaces, down_interfaces > 1 ? "s are" : " is");
     }
 
+    done:
     snmp_close(ss);
 
 out:
